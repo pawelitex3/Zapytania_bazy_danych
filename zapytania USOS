@@ -1,0 +1,11 @@
+ZAJĘCIA 6.11.2018 BAZY DANYCH - ĆWICZENIA 5
+
+Zapytania do bazy danych USOS
+
+1. Wyświetlić imię, nazwisko studenta oraz grupę zajęć do której chodzą na zajęcia Bazy danych.
+
+SELECT s.imie, s.nazwisko, g.numer
+FROM studenci s inner join zaliczenia z on (s.id_studenta=z.id_studenta) inner join grupy g on (z.id_grupy=g.id_grupy) inner join przedmioty p on (g.id_przedmiotu=p.id_przedmiotu)
+WHERE p.nazwa LIKE 'Bazy danych';
+
+
