@@ -8,4 +8,33 @@ SELECT s.imie, s.nazwisko, g.numer
 FROM studenci s inner join zaliczenia z on (s.id_studenta=z.id_studenta) inner join grupy g on (z.id_grupy=g.id_grupy) inner join przedmioty p on (g.id_przedmiotu=p.id_przedmiotu)
 WHERE p.nazwa LIKE 'Bazy danych';
 
+2. Informacje o tym kto studiuje razem z Janem Kowalskim i w której grupie.
 
+Z PODZAPYTANIEM
+
+SELECT s.imie, s.nazwisko, g.numer, g.id_grupy
+FROM studenci s JOIN zaliczenia z ON (s.id_studenta=z.id_studenta) 
+                JOIN grupy g ON (z.id_grupy=g.id_grupy)
+                JOIN przedmioty p ON (g.id_przedmiotu=p.id_przedmiotu)
+WHERE g.id_grupy IN (
+                     SELECT g.id_grupy
+                     FROM studenci s JOIN zaliczenia z ON (s.id_studenta=z.id_studenta)
+                                     JOIN grupy g ON (z.id_grupy=g.id_grupy)
+                     WHERE s.imie = 'Jan' AND s.nazwisko = 'Kowalski'
+                     )
+      AND NOT s.imie = 'Jan'
+      AND NOT s.nazwisko = 'Kowalski';
+      
+
+BEZ PODZAPYTANIA
+
+SELECT s.imie, s.nazwisko, g.numer, g.id_grupy
+FROM studenci s JOIN zaliczenia z ON (s.id_studenta=z.id_studenta) 
+                JOIN grupy g ON (z.id_grupy=g.id_grupy),
+     studenci jk JOIN zaliczenia zal ON (jk.id_studenta=zal.id_studenta) 
+                 JOIN grupy gr ON (zal.id_grupy=gr.id_grupy)
+WHERE jk.imie = 'Jan'
+      and jk.nazwisko = 'Kowalski'
+      and g.id_grupy = gr.id_grupy
+      and not s.imie = 'Jan'
+      and not s.nazwisko = 'Kowalski';
