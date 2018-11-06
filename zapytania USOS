@@ -15,7 +15,6 @@ Z PODZAPYTANIEM
 SELECT s.imie, s.nazwisko, g.numer, g.id_grupy
 FROM studenci s JOIN zaliczenia z ON (s.id_studenta=z.id_studenta) 
                 JOIN grupy g ON (z.id_grupy=g.id_grupy)
-                JOIN przedmioty p ON (g.id_przedmiotu=p.id_przedmiotu)
 WHERE g.id_grupy IN (
                      SELECT g.id_grupy
                      FROM studenci s JOIN zaliczenia z ON (s.id_studenta=z.id_studenta)
@@ -34,7 +33,7 @@ FROM studenci s JOIN zaliczenia z ON (s.id_studenta=z.id_studenta)
      studenci jk JOIN zaliczenia zal ON (jk.id_studenta=zal.id_studenta) 
                  JOIN grupy gr ON (zal.id_grupy=gr.id_grupy)
 WHERE jk.imie = 'Jan'
-      and jk.nazwisko = 'Kowalski'
-      and g.id_grupy = gr.id_grupy
-      and not s.imie = 'Jan'
-      and not s.nazwisko = 'Kowalski';
+      AND jk.nazwisko = 'Kowalski'
+      AND g.id_grupy = gr.id_grupy
+      AND not s.imie = 'Jan'
+      AND not s.nazwisko = 'Kowalski';
