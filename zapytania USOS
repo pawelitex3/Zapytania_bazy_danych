@@ -37,3 +37,12 @@ WHERE jk.imie = 'Jan'
       AND g.id_grupy = gr.id_grupy
       AND not s.imie = 'Jan'
       AND not s.nazwisko = 'Kowalski';
+      
+            
+3. Wyświetlić średnie ocen studentów
+
+SELECT s.imie, s.nazwisko, ROUND(AVG(z.ocena), 2) AS "Średnia ocen"
+FROM studenci s JOIN zaliczenia z ON (s.id_studenta=z.id_studenta)
+WHERE z.ocena NOT IN (0, 1)
+GROUP BY s.id_studenta, s.imie, s.nazwisko
+ORDER BY s.id_studenta;
