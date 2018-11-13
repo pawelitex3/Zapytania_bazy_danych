@@ -2,14 +2,19 @@ ZAJĘCIA 6.11.2018 BAZY DANYCH - ĆWICZENIA 5
 
 Zapytania do bazy danych USOS
 
+____________________________________________
+
 1. Wyświetlić imię, nazwisko studenta oraz grupę zajęć do której chodzą na zajęcia Bazy danych.
 
 SELECT s.imie, s.nazwisko, g.numer
 FROM studenci s inner join zaliczenia z on (s.id_studenta=z.id_studenta) inner join grupy g on (z.id_grupy=g.id_grupy) inner join przedmioty p on (g.id_przedmiotu=p.id_przedmiotu)
 WHERE p.nazwa LIKE 'Bazy danych';
 
+____________________________________________
+
 2. Informacje o tym kto studiuje razem z Janem Kowalskim i w której grupie.
 
+____________________________________________
 Z PODZAPYTANIEM
 
 SELECT s.imie, s.nazwisko, g.numer, g.id_grupy
@@ -24,7 +29,8 @@ WHERE g.id_grupy IN (
       AND NOT s.imie = 'Jan'
       AND NOT s.nazwisko = 'Kowalski';
       
-
+____________________________________________
+      
 BEZ PODZAPYTANIA
 
 SELECT s.imie, s.nazwisko, g.numer, g.id_grupy
@@ -38,6 +44,8 @@ WHERE jk.imie = 'Jan'
       AND not s.imie = 'Jan'
       AND not s.nazwisko = 'Kowalski';
       
+    
+____________________________________________
             
 3. Wyświetlić średnie ocen studentów
 
@@ -46,3 +54,78 @@ FROM studenci s JOIN zaliczenia z ON (s.id_studenta=z.id_studenta)
 WHERE z.ocena NOT IN (0, 1)
 GROUP BY s.id_studenta, s.imie, s.nazwisko
 ORDER BY s.id_studenta;
+
+____________________________________________
+
+4. Wyświetlić studentów z najwyższą średnią
+
+____________________________________________
+BEZ WITH
+
+SELECT
+    s.imie,
+    s.nazwisko,
+    round(AVG(z.ocena), 2)
+FROM
+    studenci s
+    JOIN zaliczenia z ON ( s.id_studenta = z.id_studenta )
+WHERE
+    z.ocena NOT IN (
+        0,
+        1
+    )
+GROUP BY
+    s.id_studenta,
+    s.imie,
+    s.nazwisko
+HAVING
+    round(AVG(z.ocena), 2) = (
+        SELECT
+            MAX(x.srednia)
+        FROM
+            (
+                SELECT
+                    round(AVG(zal.ocena), 2) as srednia
+                FROM
+                    studenci st
+                    JOIN zaliczenia zal ON ( st.id_studenta = zal.id_studenta )
+                GROUP BY
+                    st.id_studenta
+            ) x
+    )
+ORDER BY
+    round(AVG(z.ocena), 2) DESC,
+    s.id_studenta;
+  
+____________________________________________
+
+CREATE VIEW srednia AS
+    ( SELECT
+        imie,
+        nazwisko,
+        round(AVG(z.ocena), 2) AS sr
+    FROM
+        studenci s
+        JOIN zaliczenia z ON ( s.id_studenta = z.id_studenta )
+    WHERE z.ocena NOT IN (0,1)
+    GROUP BY
+        s.imie,
+        s.nazwisko,
+        s.id_studenta
+    );
+
+SELECT
+    s.imie,
+    s.nazwisko
+FROM
+    srednia s
+WHERE
+    s.sr = 
+( SELECT
+    MAX(sr)
+FROM
+    srednia
+);
+
+____________________________________________
+
