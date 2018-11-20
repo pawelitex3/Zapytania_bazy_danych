@@ -129,3 +129,43 @@ FROM
 
 ____________________________________________
 
+5. Stworzyć dwa widoki:
+
+a) średnia - id_studenta, średnia
+
+CREATE VIEW srednia AS
+    ( SELECT
+        s.id_studenta,
+        round(AVG(z.ocena), 3) AS sr
+    FROM
+        studenci s
+        JOIN zaliczenia z ON ( s.id_studenta = z.id_studenta )
+    WHERE
+        z.ocena NOT IN (
+            1,
+            0
+        )
+    GROUP BY
+        s.id_studenta
+    );
+    
+b) zajęcia - id_studenta, imię, nazwisko, nazwa grupy, nazwa przedmiotu (na który chodzą, czyli na taki gdzie nie mają jeszcze oceny)
+
+CREATE VIEW zajecia AS
+    ( SELECT
+        s.id_studenta,
+        s.imie,
+        s.nazwisko,
+        g.id_grupy,
+        g.numer,
+        p.nazwa
+    FROM
+        studenci s
+        JOIN zaliczenia z ON ( s.id_studenta = z.id_studenta )
+        JOIN grupy g ON ( z.id_grupy = g.id_grupy )
+        JOIN przedmioty p ON ( g.id_przedmiotu = p.id_przedmiotu )
+    WHERE
+        z.ocena IS NULL
+    );
+    
+____________________________________________
