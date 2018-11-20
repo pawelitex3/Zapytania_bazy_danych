@@ -129,13 +129,15 @@ FROM
 
 ____________________________________________
 
-5. Stworzyć dwa widoki:
+5. Stworzyć trzy widoki:
 
 a) średnia - id_studenta, średnia
 
 CREATE VIEW srednia AS
     ( SELECT
         s.id_studenta,
+        s.imie,
+        s.nazwisko,
         round(AVG(z.ocena), 3) AS sr
     FROM
         studenci s
@@ -146,8 +148,12 @@ CREATE VIEW srednia AS
             0
         )
     GROUP BY
-        s.id_studenta
+        s.id_studenta,
+        s.imie,
+        s.nazwisko
     );
+    
+____________________________________________
     
 b) zajęcia - id_studenta, imię, nazwisko, nazwa grupy, nazwa przedmiotu (na który chodzą, czyli na taki gdzie nie mają jeszcze oceny)
 
@@ -168,4 +174,24 @@ CREATE VIEW zajecia AS
         z.ocena IS NULL
     );
     
+____________________________________________
+
+c) student(ci) z najwyższą średnią
+
+CREATE VIEW najwyzsza_srednia AS
+    ( SELECT
+        s.id_studenta,
+        s.imie,
+        s.nazwisko,
+        s.sr
+    FROM
+        srednia s
+    WHERE
+        s.sr = (
+            SELECT
+                MAX(sr)
+            FROM
+                srednia
+        )
+    );
 ____________________________________________
