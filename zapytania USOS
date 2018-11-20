@@ -195,3 +195,5 @@ CREATE VIEW najwyzsza_srednia AS
         )
     );
 ____________________________________________
+
+POCZYTAĆ O TRIGGERS I REFRESH ON COMMIT!!!
