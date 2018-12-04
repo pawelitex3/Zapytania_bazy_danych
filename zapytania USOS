@@ -196,8 +196,19 @@ CREATE VIEW najwyzsza_srednia AS
     );
 ____________________________________________
 
-POCZYTAĆ O TRIGGERS I REFRESH ON COMMIT!!!
+6. Napisać trigge, który sprawdzi czy po wstawieniu oceny jest ona z zakredu od 2 do 5
 
-ZASTANOWIĆ SIĘ W JAKIEJ POSTACI NORMALNEJ JEST NASZA BAZA
+CREATE OR REPLACE TRIGGER sprawdz_ocene BEFORE
+    UPDATE ON zaliczenia
+    FOR EACH ROW
+BEGIN
+    if(:new.ocena <2 or :new.ocena >5) then
+        dbms_output.put_line('zla ocena ');
+        raise_application_error(-20000, 'Zla ocena!');
+    else
+        dbms_output.put_line('Stara ocena: ' || :old.ocena);
+        dbms_output.put_line('Nowa ocena: ' || :new.ocena);
+    end if;
+END;
+____________________________________________
 
-JAK SIĘ PISZE FUNKCJE PO STRONIE BAZY DANYCH ŻEBY PISAĆ TRIGGERY CZY COŚ TAM INNEGO
