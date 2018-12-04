@@ -196,7 +196,7 @@ CREATE VIEW najwyzsza_srednia AS
     );
 ____________________________________________
 
-6. Napisać trigge, który sprawdzi czy po wstawieniu oceny jest ona z zakredu od 2 do 5
+6. Napisać trigger, który sprawdzi czy po wstawieniu oceny jest ona z zakredu od 2 do 5
 
 CREATE OR REPLACE TRIGGER sprawdz_ocene BEFORE
     UPDATE ON zaliczenia
@@ -212,3 +212,27 @@ BEGIN
 END;
 ____________________________________________
 
+7. Napisać trigger, który będzie wprowadzał historię zmian oceny do tabeli historia zmian
+
+CREATE OR REPLACE TRIGGER wpis_do_historii
+    BEFORE UPDATE ON zaliczenia
+    FOR EACH ROW
+BEGIN
+    if(:new.ocena <2 or :new.ocena >5) then
+        dbms_output.put_line('zla ocena ');
+        raise_application_error(-20000, 'Zla ocena!');
+    else
+        if(:new.ocena != :old.ocena) then
+            insert into historia_zmian_oceny values(USER, :new.id_zaliczenia, :old.ocena, :new.ocena);
+        end if;
+    end if;
+END;
+
+CREATE TABLE historia_zmian_oceny
+(
+    user_name VARCHAR(40),
+    id_zaliczenia INT,
+    stara_ocena INT,
+    nowa_ocena INT
+);
+____________________________________________
