@@ -275,8 +275,26 @@ INSERT INTO "SPRZEDAZ" (ID_SPRZEDAZY, PRODUKT, ID_SPRZEDAWCY, CENA, DATA_SPRZEDA
 INSERT INTO "SPRZEDAZ" (ID_SPRZEDAZY, PRODUKT, ID_SPRZEDAWCY, CENA, DATA_SPRZEDAZY) VALUES ('15', 'Szafiry', '10', '3000', TO_DATE('2018-12-05 09:01:41', 'YYYY-MM-DD HH24:MI:SS'))
 ____________________________________________
 
-9. Wypisać zespół Jana Kowalskiego
+9. Wypisać zespół Juliusza Cezara
 
-
+WITH zespol (id_sprzedawcy, imie, nazwisko, id_szefa) AS
+    (
+    SELECT id_sprzedawcy, imie, nazwisko, id_szefa
+    FROM sprzedawcy
+    WHERE
+        imie='Juliusz' AND nazwisko='Cezar'
+UNION ALL
+SELECT
+   s.id_sprzedawcy,
+   s.imie,
+   s.nazwisko,
+   s.id_szefa
+FROM
+    zespol z inner join sprzedawcy s on z.id_sprzedawcy=s.id_szefa
+)
+SELECT
+    *
+FROM
+    zespol; 
 ____________________________________________
 10. Wypisać sprzedaż zespołu Jana Kowalskiego z miesiąca listopad
