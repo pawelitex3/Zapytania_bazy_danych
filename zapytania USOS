@@ -298,3 +298,28 @@ FROM
     zespol; 
 ____________________________________________
 10. Wypisać sprzedaż zespołu Jana Kowalskiego z miesiąca listopad
+
+WITH zespol (id_sprzedawcy, imie, nazwisko, id_szefa) AS
+    (
+    SELECT id_sprzedawcy, imie, nazwisko, id_szefa
+    FROM sprzedawcy
+    WHERE
+        imie='Juliusz' AND nazwisko='Cezar'
+UNION ALL
+SELECT
+   s.id_sprzedawcy,
+   s.imie,
+   s.nazwisko,
+   s.id_szefa
+FROM
+    zespol z inner join sprzedawcy s on z.id_sprzedawcy=s.id_szefa
+)
+SELECT
+    sum(cena) as suma_sprzedazy
+FROM
+    zespol inner join sprzedaz on (sprzedaz.id_sprzedawcy=zespol.id_sprzedawcy);
+    
+    
+    
+    
+    WYSŁAĆ ZADANIE DOMOWE
