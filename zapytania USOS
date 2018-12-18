@@ -312,3 +312,46 @@ SELECT sum(cena) as suma_sprzedazy
 FROM zespol inner join sprzedaz on (sprzedaz.id_sprzedawcy=zespol.id_sprzedawcy)
 WHERE EXTRACT(month FROM data_sprzedazy)=11;
     
+    
+SPRAWDZENIE WIADOMOŚCI
+1. Imię, nazwisko, nazwa dzialu w kolejności alfabetycznej dzial, nazwisko, imie
+
+SELECT p.imie, p.nazwisko, d.nazwa
+FROM pracownicy p JOIN dzialy d ON (p.id_dzialu=d.id_dzialu)
+ORDER BY d.nazwa ASC, p.nazwisko ASC, p.imie ASC;
+
+2. dzialy, suma pensji w dziale
+
+SELECT d.nazwa, SUM(p.pensja) AS Suma_pensji
+FROM pracownicy p JOIN dzialy d ON (p.id_dzialu=d.id_dzialu)
+GROUP BY d.nazwa;
+
+3. pracownicy i ich szefowie w projektach
+
+SELECT prac.imie, prac.nazwisko, proj.nazwa AS "NAZWA PROJEKTU", szef.imie AS "IMIE SZEFA PROJEKTU", szef.nazwisko AS "NAZWISKO SZEFA PROJEKTU"
+FROM pracownicy prac
+        JOIN projekty proj ON prac.projekt=proj.p_id
+        JOIN pracownicy szef ON proj.szef_projektu=szef.id;
+     
+4. który dzial jest najdrozszy? (w sensie kosztów pracowniczych pensji)
+
+WITH dzialy_pensje AS(
+    SELECT dzialy.id_dzialu, nazwa, SUM(pensja) AS "SUMA"
+    FROM pracownicy JOIN dzialy ON (pracownicy.id_dzialu=dzialy.id_dzialu)
+    GROUP BY dzialy.id_dzialu, nazwa
+)
+SELECT nazwa, SUMA
+FROM dzialy_pensje
+WHERE SUMA=(SELECT MAX(SUMA) FROM dzialy_pensje);
+
+5. który szef dzialu ma najwiecej klientow?
+
+WITH klienci_szefow AS(
+    SELECT id, imie, nazwisko, COUNT(k_id) as "LICZBA_KLIENTOW"
+    FROM pracownicy JOIN klienci ON id=prac_kontaktowy
+    GROUP BY id, imie, nazwisko
+)
+
+SELECT imie, nazwisko, LICZBA_KLIENTOW
+FROM klienci_szefow
+WHERE LICZBA_KLIENTOW=(SELECT MAX(liczba_klientow) FROM klienci_szefow);
